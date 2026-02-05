@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dla Ciebie 💕</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #ffd1dc 0%, #ffb6c1 50%, #ffc0cb 100%);
+            font-family: 'Quicksand', sans-serif;
+            overflow: hidden;
+        }
+
+        /* Animowane serduszka w tle */
+        .hearts-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.6);
+            animation: float 15s infinite ease-in-out;
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Główne okno */
+        .card {
+            position: relative;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 50px 60px;
+            box-shadow: 
+                0 25px 80px rgba(219, 112, 147, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.8) inset,
+                0 0 100px rgba(255, 182, 193, 0.3);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            backdrop-filter: blur(10px);
+            animation: cardAppear 0.8s ease-out;
+        }
+
+        @keyframes cardAppear {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Widok pytania */
+        .question-view h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.8rem;
+            color: #e75480;
+            margin-bottom: 40px;
+            line-height: 1.3;
+            text-shadow: 2px 2px 4px rgba(231, 84, 128, 0.2);
+        }
+
+        .heart-icon {
+            font-size: 4rem;
+            margin-bottom: 30px;
+            animation: heartbeat 1.5s infinite;
+            display: block;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        .btn-yes {
+            background: linear-gradient(135deg, #ff6b9d 0%, #e75480 100%);
+            color: white;
+            border: none;
+            padding: 18px 60px;
+            font-size: 1.4rem;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(231, 84, 128, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-yes::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-yes:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(231, 84, 128, 0.5);
+        }
+
+        .btn-yes:hover::before {
+            left: 100%;
+        }
+
+        .btn-yes:active {
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        /* Widok galerii */
+        .gallery-view {
+            display: none;
+        }
+
+        .gallery-view.active {
+            display: block;
+            animation: cardAppear 0.6s ease-out;
+        }
+
+        .question-view.hidden {
+            display: none;
+        }
+
+        .love-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.5rem;
+            color: #e75480;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(231, 84, 128, 0.2);
+        }
+
+        .gallery-container {
+            position: relative;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .gallery-image {
+            max-width: 100%;
+            max-height: 60vh;
+            width: auto;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            object-fit: contain;
+        }
+
+        .placeholder-image {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ffeef2 0%, #ffd1dc 100%);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #e75480;
+            font-size: 1.1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .placeholder-image span {
+            font-size: 4rem;
+            margin-bottom: 10px;
+        }
+
+        .nav-arrows {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .nav-btn {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            border: 3px solid #e75480;
+            background: white;
+            color: #e75480;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-btn:hover {
+            background: #e75480;
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 5px 20px rgba(231, 84, 128, 0.4);
+        }
+
+        .image-counter {
+            margin-top: 15px;
+            color: #c44569;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        /* RESPONSYWNOŚĆ */
+        @media (max-width: 600px) {
+            .card {
+                padding: 30px 25px;
+                border-radius: 25px;
+                margin: 15px;
+                width: calc(100% - 30px);
+            }
+
+            .question-view h1 {
+                font-size: 2rem;
+                margin-bottom: 30px;
+            }
+
+            .heart-icon {
+                font-size: 3rem;
+                margin-bottom: 20px;
+            }
+
+            .btn-yes {
+                padding: 15px 45px;
+                font-size: 1.2rem;
+            }
+
+            .love-title {
+                font-size: 2.5rem;
+                margin-bottom: 20px;
+            }
+
+            .nav-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.3rem;
+            }
+
+            .nav-arrows {
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .card {
+                padding: 25px 20px;
+            }
+
+            .question-view h1 {
+                font-size: 1.7rem;
+            }
+
+            .heart-icon {
+                font-size: 2.5rem;
+            }
+
+            .btn-yes {
+                padding: 14px 35px;
+                font-size: 1.1rem;
+            }
+
+            .love-title {
+                font-size: 2rem;
+            }
+
+            .nav-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 1.2rem;
+            }
+
+            .placeholder-image {
+                font-size: 0.95rem;
+            }
+
+            .placeholder-image span {
+                font-size: 3rem;
+            }
+        }
+
+        /* Dla dużych ekranów */
+        @media (min-width: 1024px) {
+            .card {
+                max-width: 550px;
+                padding: 60px 70px;
+            }
+
+            .question-view h1 {
+                font-size: 3.2rem;
+            }
+
+            .love-title {
+                font-size: 4rem;
+            }
+        }
+
+        /* Konfetti serduszka */
+        .confetti {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animowane serduszka w tle -->
+    <div class="hearts-bg" id="heartsBg"></div>
+
+    <!-- Główne okno -->
+    <div class="card">
+        <!-- Widok pytania -->
+        <div class="question-view" id="questionView">
+            <span class="heart-icon">💕</span>
+            <h1>Czy zostaniesz moją Walentynką?</h1>
+            <button class="btn-yes" onclick="showGallery()">Tak! 💝</button>
+        </div>
+
+        <!-- Widok galerii -->
+        <div class="gallery-view" id="galleryView">
+            <h2 class="love-title">Kocham Cię! 💗</h2>
+            <div class="gallery-container">
+                <div class="placeholder-image" id="imageContainer">
+                    <span>📷</span>
+                    <p>Dodaj swoje zdjęcia</p>
+                    <p style="font-size: 0.85rem; margin-top: 5px; opacity: 0.7;">Edytuj tablicę images[] w kodzie</p>
+                </div>
+            </div>
+            <div class="nav-arrows">
+                <button class="nav-btn" onclick="prevImage()">←</button>
+                <button class="nav-btn" onclick="nextImage()">→</button>
+            </div>
+            <p class="image-counter" id="imageCounter">1 / 1</p>
+        </div>
+    </div>
+
+    <script>
+        // Generowanie serduszek w tle
+        function createHearts() {
+            const container = document.getElementById('heartsBg');
+            const hearts = ['❤️', '💕', '💗', '💖', '💓', '💘', '💝', '♥️'];
+            
+            for (let i = 0; i < 30; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDelay = Math.random() * 15 + 's';
+                heart.style.animationDuration = (10 + Math.random() * 10) + 's';
+                heart.style.fontSize = (15 + Math.random() * 25) + 'px';
+                container.appendChild(heart);
+            }
+        }
+
+        createHearts();
+
+        // Tablica zdjęć - TUTAJ DODAJ SWOJE ZDJĘCIA
+        const images = [
+            'foto1.jfif',
+            'foto2.jfif',
+            'foto3.jfif',
+            'foto4.jfif',
+            'foto5.jfif',
+        ];
+
+        let currentImage = 0;
+
+        function showGallery() {
+            // Efekt konfetti
+            createConfetti();
+            
+            document.getElementById('questionView').classList.add('hidden');
+            document.getElementById('galleryView').classList.add('active');
+            
+            if (images.length > 0) {
+                updateImage();
+            }
+        }
+
+        function createConfetti() {
+            const colors = ['#ff6b9d', '#e75480', '#ffd1dc', '#ffb6c1', '#ff69b4'];
+            const hearts = ['❤️', '💕', '💗', '💖', '💓'];
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.top = '-50px';
+                    confetti.style.fontSize = (20 + Math.random() * 20) + 'px';
+                    confetti.style.animation = `confettiFall ${2 + Math.random() * 2}s forwards`;
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 4000);
+                }, i * 50);
+            }
+        }
+
+        function updateImage() {
+            const container = document.getElementById('imageContainer');
+            const counter = document.getElementById('imageCounter');
+            
+            if (images.length > 0) {
+                container.innerHTML = `<img src="${images[currentImage]}" alt="Zdjęcie ${currentImage + 1}" class="gallery-image">`;
+                counter.textContent = `${currentImage + 1} / ${images.length}`;
+            }
+        }
+
+        function nextImage() {
+            if (images.length > 0) {
+                currentImage = (currentImage + 1) % images.length;
+                updateImage();
+            }
+        }
+
+        function prevImage() {
+            if (images.length > 0) {
+                currentImage = (currentImage - 1 + images.length) % images.length;
+                updateImage();
+            }
+        }
+    </script>
+</body>
+</html>
